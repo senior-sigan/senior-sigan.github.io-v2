@@ -31,6 +31,7 @@ export default function Widget({ children, position, onDragStop, onDragStart }: 
     >
       <div ref={nodeRef} style={{ position: 'absolute', zIndex: position.z }}>
         <div className="handle">Drag from here</div>
+        <div className="draggable-iframe-cover"></div>
         <div>{children}</div>
       </div>
     </Draggable>

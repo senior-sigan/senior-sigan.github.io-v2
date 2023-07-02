@@ -31,13 +31,14 @@ function Home() {
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
   const [topZ, setTopZ] = useState(1000);
 
-  const updateWidget = (widget: WidgetData, data: DraggableData) => {
+  const handleDragStop = (widget: WidgetData, data: DraggableData) => {
     widget.position.x = data.x;
     widget.position.y = data.y;
     setWidgets(widgets);
+    console.log('Stop');
   }
 
-  const updateZ = (widget: WidgetData) => {
+  const handleDragStart = (widget: WidgetData) => {
     if (widget.position.z == topZ) {
       return;
     }
@@ -45,6 +46,7 @@ function Home() {
     widget.position.z = newZ;
     setWidgets(widgets);
     setTopZ(newZ);
+    console.log('Start');
   };
 
   const drawWidget = (params: Content, idx: number, widget: WidgetData) => {
@@ -53,8 +55,8 @@ function Home() {
         key={idx}
         position={widget.position}
         code={params.code}
-        onDragStop={(_e, data) => updateWidget(widget, data)}
-        onDragStart={() => updateZ(widget)}
+        onDragStop={(_e, data) => handleDragStop(widget, data)}
+        onDragStart={() => handleDragStart(widget)}
       />
     }
     if (params.type === 'GooglePresentationWidget') {
@@ -62,8 +64,8 @@ function Home() {
         key={idx}
         position={widget.position}
         code={params.code}
-        onDragStop={(_e, data) => updateWidget(widget, data)}
-        onDragStart={() => updateZ(widget)}
+        onDragStop={(_e, data) => handleDragStop(widget, data)}
+        onDragStart={() => handleDragStart(widget)}
       />
     }
   }
@@ -83,13 +85,15 @@ function Home() {
     };
   };
 
+  const widgetsHtml = widgets.map((widget, idx) => drawWidget(content[widget.id], idx, widget));
+
   return (
     <div className="App">
       <button onClick={spawnWindow(0)}>Spawn</button>
       <button onClick={spawnWindow(1)}>Spawn</button>
       <button onClick={spawnWindow(2)}>Spawn</button>
       <button onClick={spawnWindow(3)}>Spawn</button>
-      {widgets.map((widget, idx) => drawWidget(content[widget.id], idx, widget))}
+      <div>{widgetsHtml}</div>
     </div>
   );
 }
