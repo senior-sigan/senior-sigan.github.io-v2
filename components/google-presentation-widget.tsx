@@ -1,23 +1,18 @@
-import { DraggableEventHandler } from 'react-draggable';
-import Widget from './widget';
+import Widget, {WidgetProps} from './widget';
 
 type Props = {
   code: string;
-  title?: string;
-  position: {
-    x: number;
-    y: number;
-  };
-  onDragStop?: DraggableEventHandler;
-};
+} & WidgetProps;
+
 function GooglePresentationWidget({
   code,
   title = 'Presentation',
-  position = { x: 0, y: 0 },
+  position,
+  ...widgetProps
 }: Props) {
   const src = `https://docs.google.com/presentation/d/e/${code}/embed?start=false&loop=false&delayms=3000`;
   return (
-    <Widget position={position}>
+    <Widget position={position} title={title} {...widgetProps}>
       <iframe
         title={title}
         src={src}

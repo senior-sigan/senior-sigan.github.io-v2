@@ -1,34 +1,38 @@
 import Draggable, { DraggableEventHandler } from 'react-draggable';
-import React from 'react';
+import {useRef} from 'react';
+import styles from './widgets.module.css';
 
-type Props = {
+export type WidgetProps = {
   children?: React.ReactNode;
+  title?: string;
   position: {
     x: number;
     y: number;
+    z: number;
   };
   onDragStop?: DraggableEventHandler;
+  onDragStart?: DraggableEventHandler;
 };
 
-function Widget({ children, position = { x: 0, y: 0 }, onDragStop }: Props) {
+export default function Widget({ children, position, onDragStop, onDragStart }: WidgetProps) {
   // React.useRef because of
   // https://github.com/react-grid-layout/react-draggable/blob/master/CHANGELOG.md#440-may-12-2020
-  const nodeRef = React.useRef(null);
+  const nodeRef = useRef(null);
   return (
     <Draggable
       axis="both"
       handle=".handle"
       defaultPosition={position}
-      grid={[25, 25]}
+      defaultClassNameDragging={styles.widgetDragging}
+      // grid={[25, 25]}
       onStop={onDragStop}
+      onStart={onDragStart}
       nodeRef={nodeRef}
     >
-      <div ref={nodeRef} style={{ position: 'absolute' }}>
+      <div ref={nodeRef} style={{ position: 'absolute', zIndex: position.z }}>
         <div className="handle">Drag from here</div>
         <div>{children}</div>
       </div>
     </Draggable>
   );
 }
-
-export default Widget;
