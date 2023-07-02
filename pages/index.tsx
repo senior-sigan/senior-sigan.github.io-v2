@@ -2,6 +2,7 @@ import YoutubeWidget from '../components/youtube-widget';
 import GooglePresentationWidget from '../components/google-presentation-widget';
 import { useState } from 'react';
 import { DraggableData } from 'react-draggable';
+import PostWidget from '../components/post-widget';
 
 
 type Position = {
@@ -16,14 +17,21 @@ type WidgetData = {
 };
 
 type Content = {
-  type: "YoutubeWidget" | "GooglePresentationWidget",
+  type: "YoutubeWidget";
   code: string;
+} | {
+  type: "GooglePresentationWidget",
+  code: string;
+} | {
+  type: "PostWidget",
+  slug: string;
 }
 
 const content: Content[] = [
+  { type: "PostWidget", slug: "example"},
+  { type: "PostWidget", slug: "a"},
   { type: "YoutubeWidget", code: "zkqzi5XoUIw"},
   { type: "YoutubeWidget", code: "YNx1KdtYNO8"},
-  { type: "YoutubeWidget", code: "xvYLJMBW700"},
   { type: "GooglePresentationWidget", code: "2PACX-1vS78kLmcfoGIt2wpNaNpvfTc_7vGIG7N71xH6UxpnYLx3LP7jUEx8V4tvHA0U09pfXzr4CqNorOEGt0" },
 ];
 
@@ -35,7 +43,6 @@ function Home() {
     widget.position.x = data.x;
     widget.position.y = data.y;
     setWidgets(widgets);
-    console.log('Stop');
   }
 
   const handleDragStart = (widget: WidgetData) => {
@@ -46,7 +53,6 @@ function Home() {
     widget.position.z = newZ;
     setWidgets(widgets);
     setTopZ(newZ);
-    console.log('Start');
   };
 
   const drawWidget = (params: Content, idx: number, widget: WidgetData) => {
@@ -64,6 +70,15 @@ function Home() {
         key={idx}
         position={widget.position}
         code={params.code}
+        onDragStop={(_e, data) => handleDragStop(widget, data)}
+        onDragStart={() => handleDragStart(widget)}
+      />
+    }
+    if (params.type === 'PostWidget') {
+      return <PostWidget
+        key={idx}
+        slug={params.slug}
+        position={widget.position}
         onDragStop={(_e, data) => handleDragStop(widget, data)}
         onDragStart={() => handleDragStart(widget)}
       />
@@ -89,10 +104,11 @@ function Home() {
 
   return (
     <div className="App">
-      <button onClick={spawnWindow(0)}>Spawn</button>
-      <button onClick={spawnWindow(1)}>Spawn</button>
-      <button onClick={spawnWindow(2)}>Spawn</button>
-      <button onClick={spawnWindow(3)}>Spawn</button>
+      <button onClick={spawnWindow(0)}>Example</button>
+      <button onClick={spawnWindow(1)}>A</button>
+      <button onClick={spawnWindow(2)}>Video1</button>
+      <button onClick={spawnWindow(3)}>Video2</button>
+      <button onClick={spawnWindow(4)}>Presentation</button>
       <div>{widgetsHtml}</div>
     </div>
   );

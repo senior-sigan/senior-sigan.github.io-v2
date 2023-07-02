@@ -1,6 +1,6 @@
 import Draggable, { DraggableEventHandler } from 'react-draggable';
 import {useRef} from 'react';
-import styles from './widgets.module.css';
+import { styled } from 'styled-components';
 
 export type WidgetProps = {
   children?: React.ReactNode;
@@ -23,7 +23,6 @@ export default function Widget({ children, position, onDragStop, onDragStart }: 
       axis="both"
       handle=".handle"
       defaultPosition={position}
-      defaultClassNameDragging={styles.widgetDragging}
       // grid={[25, 25]}
       onStop={onDragStop}
       onStart={onDragStart}
@@ -32,8 +31,12 @@ export default function Widget({ children, position, onDragStop, onDragStart }: 
       <div ref={nodeRef} style={{ position: 'absolute', zIndex: position.z }}>
         <div className="handle">Drag from here</div>
         <div className="draggable-iframe-cover"></div>
-        <div>{children}</div>
+        <WidgetWrapper>{children}</WidgetWrapper>
       </div>
     </Draggable>
   );
 }
+
+const WidgetWrapper = styled.div`
+  background-color: white;
+`;
